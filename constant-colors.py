@@ -11,5 +11,5 @@ for i in range(100):
     g = random.randint(0,255)
     b = random.randint(0,255)
 
-    l.constant((r,g,b))
+    l.constant(r,g,b)
     time.sleep(1)
