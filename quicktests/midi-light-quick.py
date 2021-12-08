@@ -8,7 +8,7 @@ import math
 
 
 pixel_pin = board.D18
-ORDER = neopixel.GRB
+ORDER = neopixel.RGB
 num_pixels = 50
 
 pixels = neopixel.NeoPixel(
