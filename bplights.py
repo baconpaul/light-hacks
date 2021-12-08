@@ -35,6 +35,12 @@ class BPLights:
         self.pixels.fill((self.clmp(r), self.clmp(g), self.clmp(b)))
         self.pixels.show()
 
+    def setval(self, i, r, g, b):
+        self.pixels[i] = (self.clmp(r), self.clmp(g), self.clmp(b))
+
+    def show(self):
+        self.pixels.show()
+
 
 class BPNanoKontrol:
     def __init__(self) -> None:
