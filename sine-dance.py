@@ -4,12 +4,14 @@ import random
 import math
 
 
-l = bplights.BPLights(50)
+l = bplights.BPLights(300)
 l.off()
 
 m = bplights.BPNanoKontrol()
+m.sliders[0] = 1
+m.knobs[0] = 1
 
-dq = math.pi * 2.0 / l.npixels
+dq = math.pi * 6.0 / l.npixels
 dt = 0.1
 t = 0
 
