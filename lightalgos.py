@@ -3,7 +3,7 @@ import time
 import math
 import random
 
-allalgos = ["snowfall", "roundsweep", "smoothconstant", "downsweep"]
+allalgos = ["snowfall", "roundsweep", "smoothconstant", "downsweep", "swellandclear"]
 
 class snowfall:
     def __init__(self, lights) -> None:
@@ -131,4 +131,52 @@ class downsweep:
             time.sleep(slpt)
     
 
-    
+class swellandclear:
+    def __init__(self, lights) -> None:
+        self.lights = lights
+
+    def runfor(self, seconds):
+        ct = 0
+        slpt = 0.1
+
+        i = 0
+        r = [0] * 25
+        g = [0] * 25
+        b = [0] * 25
+
+        l = self.lights
+
+        mode = 0  # 0 is swell 1 is clear
+        swellOver = 50
+        clearOver = 25
+        sc = 0
+        dc = 0
+        
+        while ct * slpt < seconds:
+            ct = ct + 1
+
+            if (mode == 0):
+                if (sc == 0):
+                    rt = random.randint(0,100)
+                    gt = random.randint(0,100)
+                    bt = random.randint(100,200)
+                frac = 1.0 * sc / swellOver
+                l.constant(rt * frac, gt * frac, bt * frac)
+                sc = sc + 1
+                if (sc == swellOver):
+                    mode = 1
+            if (mode == 1):
+                sc = 0
+                for c in range(l.chunks):
+                    l.setchunk(c, dc, 255,255,255)
+                    if (dc > 0):
+                        l.setchunk(c,dc-1, 0,0,0)
+                dc = dc + 1
+                if (dc == 25):
+                    dc = 0
+                    sc = 0
+                    mode = 0
+            l.show()
+            time.sleep(slpt)
+
+       
