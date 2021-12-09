@@ -3,6 +3,8 @@ import time
 import math
 import random
 
+allalgos = ["snowfall", "roundsweep", "smoothconstant", "downsweep"]
+
 class snowfall:
     def __init__(self, lights) -> None:
         self.lights = lights
@@ -60,3 +62,73 @@ class smoothconstant:
             l.constant(r,g,b)
             l.show()
             time.sleep(dt)
+
+
+class roundsweep:
+    def __init__(self, lights) -> None:
+        self.lights = lights
+
+    def runfor(self, seconds):
+        ct = 0
+        slpt = 0.1
+        i = 0
+        r = [0] * 25
+        g = [0] * 25
+        b = [0]*25
+
+        l = self.lights
+       
+        t = 0
+        dt = 0.02
+        tau =  2.0 * 3.14159268
+        while ct * slpt < seconds:
+            ct = ct + 1
+            for which in range(l.chunks):
+                fwhich = which * 1.0 / l.chunks
+                s = math.sin(2 * tau * ( t + fwhich)) * 0.45 + 0.5
+
+                for q in range(25):
+                    r[q] = q * 10 * s
+                    g[q] = (240 - q * 10) * s
+
+                l.fillchunk(which, r, g, b)
+            l.show()
+            t = t + dt
+            time.sleep(slpt)
+
+class downsweep:
+    def __init__(self, lights) -> None:
+        self.lights = lights
+
+    def runfor(self, seconds):
+        ct = 0
+        slpt = 0.1
+
+        i = 0
+        r = [0] * 25
+        g = [0] * 25
+        b = [0]*25
+
+        l = self.lights
+
+        t = 0
+        dt = 0.07
+        tau =  2.0 * 3.14159268
+        while ct * slpt < seconds:
+            ct = ct + 1
+            for q in range(25):
+                s = math.sin(tau * ( t + q / 25)) * 0.5 + 0.5
+
+                r[q] = 180 * s + 40
+                g[q] = 180 * s + 40
+                b[q] = 220
+
+            for which in range(l.chunks):
+                l.fillchunk(which, r, g, b)
+
+            l.show()
+            t = t + dt
+            time.sleep(slpt)
+    
+
+    
