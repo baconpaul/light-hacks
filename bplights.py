@@ -13,6 +13,9 @@ class BPLights:
 
         self.pixel_pin = board.D18
         self.order = neopixel.RGB
+
+        self.chunks = 12
+        self.chunklen = 25
     
         self.pixels = neopixel.NeoPixel(
             self.pixel_pin, self.npixels, 
@@ -37,6 +40,26 @@ class BPLights:
 
     def setval(self, i, r, g, b):
         self.pixels[i] = (self.clmp(r), self.clmp(g), self.clmp(b))
+
+    def mapchunk(self, chunk):
+        # 1       4 5     8 9         12
+        #    2 3      6 7      10 11
+        # so order is
+        # 1 4 5 8 9 12 2 3 6 7 10 11
+        d = [ 1, 4, 5, 12, 9, 8, 2, 3, 6, 7, 10, 11 ] 
+        return d[chunk] - 1
+
+    def setchunk(self, chunk, idx, r, g, b):
+        # odd chunks go up the tree even chunks go down
+        # this is indexed from the top
+        chunk = self.mapchunk(chunk)
+        if (chunk % 2 == 0):
+            idx = self.chunklen - idx 
+        self.setval(chunk * self.chunklen + idx, r, g, b)
+
+    def fillchunk(self, chunk, ra, ga, ba):
+        for q in range(self.chunklen):
+            self.setchunk(chunk, q, ra[q], ga[q], ba[q])
 
     def show(self):
         self.pixels.show()
