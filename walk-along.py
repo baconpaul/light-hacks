@@ -13,8 +13,8 @@ while True:
         v = (9-i)/10.0
         c = 120 * v
         l.setval((idx+i+1)%l.npixels, c, c, 0)
-        l.setval((idx-i-1)%l.npixels, c, 0, 0)
-    l.setval(idx, 255,255,255)
+        l.setval((idx-i-1)%l.npixels, c, c, 0)
+    l.setval(idx, 255,0,0)
 
     l.show()
     idx = (idx + 1) % l.npixels
