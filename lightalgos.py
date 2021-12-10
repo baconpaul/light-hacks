@@ -3,7 +3,8 @@ import time
 import math
 import random
 
-allalgos = ["snowfall", "roundsweep", "smoothconstant", "downsweep", "swellandclear"]
+allalgos = ["snowfall", "roundsweep", "smoothconstant", 
+            "snake", "downsweep", "swellandclear", "burst"]
 
 class snowfall:
     def __init__(self, lights) -> None:
@@ -180,3 +181,94 @@ class swellandclear:
             time.sleep(slpt)
 
        
+class snake:
+    def __init__(self, lights) -> None:
+        self.lights = lights
+
+    def runfor(self, seconds):
+        ct = 0
+        slpt = 0.1
+
+        l = self.lights
+        l.off()
+        
+        while ct * slpt < seconds:
+            for i in range(20):
+                frac = i/19
+                q = (ct + i) % l.npixels
+                l.setval(q,frac*100,frac*100,frac*255)
+            
+            for i in range(10):
+                frac = i/9
+                q = (ct + i + 100) % l.npixels
+                l.setval(q,frac*250,frac*140,frac*0)
+            
+            for i in range(15):
+                frac = i/14
+                q = (ct + i + 200) % l.npixels
+                l.setval(q,frac*0,frac*240,frac*0)
+            
+            ct = ct + 1
+            l.show()
+            time.sleep(slpt)
+
+class burst:
+    def __init__(self, lights) -> None:
+        self.lights = lights
+        self.grid = []
+        self.ngrid = []
+        for i in range(12):
+            q = []
+            v = []
+            for j in range(25):
+                q.append([0,0,0])
+                v.append([0,0,0])
+            self.grid.append(q)
+            self.ngrid.append(v)
+        
+    def runfor(self, seconds):
+        ct = 0
+        slpt = 0.1
+
+        l = self.lights
+        l.off()
+
+        tdiff = 0.97
+        ndiff = 0.8
+        
+        while ct * slpt < seconds:
+            if (random.randint(0,50) > 20):
+                ir = random.randint(0,11)
+                jr = random.randint(0,24)
+                if (random.randint(0,8) > 5):
+                    self.grid[ir][jr][0] = 255
+                    self.grid[ir][jr][1] = 100
+                    self.grid[ir][jr][2] = 100
+                else:
+                    self.grid[ir][jr][2] = random.randint(100,255)
+                    self.grid[ir][jr][1] = random.randint(100,150)
+                    self.grid[ir][jr][0] = self.grid[ir][jr][1]
+
+            for i in range(12):
+                ip1 = (i+12+1)%12
+                im1 = (i+12-1)%12
+                for j in range(25):
+                    jp1 = (i+25+1)%25
+                    jm1 = (j+25-1)%25
+                    for k in range(3):
+                        avg = self.grid[ip1][j][k] + self.grid[im1][j][k] + self.grid[i][jp1][k] + self.grid[i][jm1][k]
+                        avg = avg * 0.25
+                        nv = self.grid[i][j][k] * ndiff + avg * (1-ndiff)
+                        
+                        self.ngrid[i][j][k] = nv * tdiff
+
+            self.grid = self.ngrid.copy()
+           
+            for i in range(12):
+                for j in range(25):
+                    l.setchunk(i, j, self.grid[i][j][0], self.grid[i][j][1], self.ngrid[i][j][2])
+
+
+            ct = ct + 1
+            l.show()
+            time.sleep(slpt)
