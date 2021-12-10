@@ -4,7 +4,7 @@ import math
 import random
 
 allalgos = ["snowfall", "roundsweep", "smoothconstant", 
-            "snake", "downsweep", "swellandclear", "burst"]
+            "snake", "downsweep", "swellandclear", "burst", "candycane"]
 
 class snowfall:
     def __init__(self, lights) -> None:
@@ -272,3 +272,49 @@ class burst:
             ct = ct + 1
             l.show()
             time.sleep(slpt)
+
+
+class candycane:
+    def __init__(self, lights) -> None:
+        self.lights = lights
+         
+    def runfor(self, seconds):
+        ct = 8
+        slpt = 0.1
+
+        l = self.lights
+        
+        sh = 0
+        dsh = 0.2716
+        while ct * slpt < seconds:
+            ct = ct + 1
+
+            wrote = []
+            for i in range(12):
+                wrote.append([])
+                for j in range(25):
+                    wrote[i].append(False)
+
+            for c in range(12):
+                for q in range(25):
+                    (fr,i) = math.modf(sh)
+                    if (int(q+sh)%12 == c):  
+                        wrote[c][q] = True
+                        l.setchunk(c,q,255,0,0)
+                        fr = 1 - fr
+                        if (q+1 < 25):
+                            wrote[c][q+1] = True
+                            l.setchunk(c,q+1,255*fr+120*(1-fr),120*(1-fr),120*(1-fr))
+                        fr = 1 - fr
+                        if (q-1 >0):
+                            wrote[c][q-1] = True
+                            l.setchunk(c,q-1,255*fr+120*(1-fr),120*(1-fr),120*(1-fr))
+
+
+            for c in range(12):
+                for q in range(25):
+                    if (not wrote[c][q]):
+                        l.setchunk(c,q,120,120,120)         
+            l.show()
+            sh = sh + dsh
+            time.sleep(slpt) 

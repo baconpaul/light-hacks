@@ -1,6 +1,8 @@
+import sys
+sys.path.append("/home/pi/light-hacks")
+
 import bplights
 from lightalgos import *
-import sys
 import time
 import random
 
